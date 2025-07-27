@@ -9,32 +9,28 @@
 <body>
   <div id="menu">
     <h1>Poker Squares</h1>
-    <label>
-      <strong>Choose Game Mode:</strong><br>
+    <label>Game Mode:
       <select id="game-mode">
-        <option value="standard">Standard (no moves after place)</option>
-        <option value="shuffle">Poker Shuffle (free movement)</option>
+        <option value="standard">Standard</option>
+        <option value="shuffle">Shuffle</option>
       </select>
-    </label><br><br>
-    <label>
-      <strong>Scoring System:</strong><br>
+    </label><br/>
+    <label>Scoring System:
       <select id="scoring-system">
         <option value="american">American</option>
         <option value="english">English</option>
       </select>
-    </label><br><br>
-    <div id="leaderboard">
-      <h2>Leaderboard</h2>
-      <div id="leaderboard-list"></div>
-    </div><br>
+    </label><br/>
     <button onclick="startGame()">Start Game</button>
+    <h2>Top 5 Scores</h2>
+    <ul id="top-scores"></ul>
   </div>
 
   <div id="game" style="display: none;">
     <h2 id="mode-title"></h2>
     <div id="card-pool"></div>
-    <div id="grid"></div>
-    <button id="score-button" onclick="endGame()">Finish & Score</button>
+    <div id="card-container"></div>
+    <div id="score-display"></div>
     <button onclick="resetGame()">Restart</button>
   </div>
 

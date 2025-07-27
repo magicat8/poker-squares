@@ -1,8 +1,13 @@
-let gameMode = 'standard';
-let scoringSystem = 'american';
 let deck = [];
 let placedCards = Array(25).fill(null);
+let gameMode = 'standard';
+let scoringSystem = 'american';
 let selectedCard = null;
+
+const pokerScores = {
+  american: { pair: 2, twoPair: 5, three: 10, straight: 15, flush: 20, fullHouse: 25, four: 50, straightFlush: 75, royal: 100 },
+  english:  { pair: 1, twoPair: 3, three: 6, straight: 12, flush: 5, fullHouse: 10, four: 16, straightFlush: 30, royal: 30 }
+};
 
 function startGame() {
   gameMode = document.getElementById('game-mode').value;
@@ -12,190 +17,97 @@ function startGame() {
   document.getElementById('game').style.display = 'block';
   document.getElementById('mode-title').textContent = `Mode: ${gameMode} | Scoring: ${scoringSystem}`;
 
-  deck = generateDeck();
-
-  if (gameMode === 'shuffle') {
+  if (!loadGame()) {
+    deck = generateDeck();
     placedCards = Array(25).fill(null);
-    renderCardPool(deck);
-  } else {
-    renderCardPool(deck);
+    if (gameMode === 'shuffle') renderCardPool(deck);
+    else renderCardPool([deck[0]]);
   }
 
   renderGrid();
 }
 
-function generateDeck() {
-  const suits = ['♠', '♥', '♦', '♣'];
-  const values = ['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
-  const cards = [];
-
-  for (let s of suits) {
-    for (let v of values) {
-      cards.push({ suit: s, value: v });
-    }
-  }
-
-  for (let i = cards.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [cards[i], cards[j]] = [cards[j], cards[i]];
-  }
-
-  return cards.slice(0, 25);
-}
-
 function renderCardPool(cards) {
   const pool = document.getElementById('card-pool');
   pool.innerHTML = '';
-
-  cards.forEach((card, index) => {
-    if (!card) return;
-
+  cards.forEach((card, idx) => {
     const div = document.createElement('div');
     div.className = 'card' + (card.suit === '♥' || card.suit === '♦' ? ' red' : '');
-    div.draggable = true;
-    div.textContent = `${card.value} ${card.suit}`;
-    div.dataset.index = index;
-
-    div.addEventListener('dragstart', (e) => {
-      e.dataTransfer.setData('card-index', index);
-    });
-
-    div.addEventListener('click', () => {
-      selectedCard = index;
-      document.querySelectorAll('.card').forEach(el => el.classList.remove('selected'));
-      div.classList.add('selected');
-    });
-
+    div.innerHTML = `${card.rank}<br/>${card.suit}`;
+    div.onclick = () => {
+      selectedCard = card;
+      renderCardPool(cards.map(c => ({...c}))); // Re-render to show selection
+    };
+    if (card === selectedCard) div.classList.add('selected');
     pool.appendChild(div);
   });
 }
 
 function renderGrid() {
-  const grid = document.getElementById('grid');
-  grid.innerHTML = '';
-
-  for (let i = 0; i < 25; i++) {
-    const cell = document.createElement('div');
-    cell.className = 'cell';
-    cell.dataset.cell = i;
-
-    const card = placedCards[i];
+  const container = document.getElementById('card-container');
+  container.innerHTML = '';
+  placedCards.forEach((card, idx) => {
+    const div = document.createElement('div');
+    div.className = 'card';
     if (card) {
-      const div = document.createElement('div');
-      div.className = 'card' + (card.suit === '♥' || card.suit === '♦' ? ' red' : '');
-      div.textContent = `${card.value} ${card.suit}`;
-      div.draggable = (gameMode === 'shuffle');
-      div.dataset.grid = i;
-
+      div.innerHTML = `${card.rank}<br/>${card.suit}`;
+      div.classList.add(card.suit === '♥' || card.suit === '♦' ? 'red' : '');
       if (gameMode === 'shuffle') {
-        div.addEventListener('dragstart', (e) => {
-          e.dataTransfer.setData('from-grid', i);
-        });
-
-        div.addEventListener('click', () => {
-          selectedCard = { from: 'grid', index: i };
-        });
+        div.onclick = () => {
+          selectedCard = card;
+          placedCards[idx] = null;
+          renderGrid();
+          renderCardPool([selectedCard]);
+        };
       }
-
-      cell.appendChild(div);
+    } else if (selectedCard) {
+      div.onclick = () => {
+        placedCards[idx] = selectedCard;
+        if (gameMode === 'standard') deck.shift();
+        selectedCard = null;
+        renderGrid();
+        renderCardPool(gameMode === 'standard' ? [deck[0]] : deck.filter(c => !placedCards.includes(c)));
+        if (placedCards.every(c => c)) finishGame();
+      };
     }
-
-    cell.addEventListener('dragover', (e) => {
-      e.preventDefault();
-    });
-
-    cell.addEventListener('drop', (e) => {
-      const poolIndex = e.dataTransfer.getData('card-index');
-      const fromGrid = e.dataTransfer.getData('from-grid');
-      const cellIndex = parseInt(cell.dataset.cell);
-
-      if (fromGrid !== '') {
-        const moving = placedCards[fromGrid];
-        placedCards[fromGrid] = null;
-        placedCards[cellIndex] = moving;
-      } else if (poolIndex !== '') {
-        if (gameMode === 'standard' && placedCards[cellIndex]) return;
-        placedCards[cellIndex] = deck[poolIndex];
-        deck[poolIndex] = null;
-      }
-
-      renderCardPool(deck.filter(c => c !== null));
-      renderGrid();
-    });
-
-    cell.addEventListener('click', () => {
-      const cellIndex = parseInt(cell.dataset.cell);
-
-      if (typeof selectedCard === 'number') {
-        if (gameMode === 'standard' && placedCards[cellIndex]) return;
-        placedCards[cellIndex] = deck[selectedCard];
-        deck[selectedCard] = null;
-        selectedCard = null;
-      } else if (selectedCard && selectedCard.from === 'grid' && gameMode === 'shuffle') {
-        placedCards[cellIndex] = placedCards[selectedCard.index];
-        placedCards[selectedCard.index] = null;
-        selectedCard = null;
-      }
-
-      renderCardPool(deck.filter(c => c !== null));
-      renderGrid();
-    });
-
-    grid.appendChild(cell);
-  }
+    container.appendChild(div);
+  });
+  saveGame();
 }
 
-function endGame() {
-  const hands = [];
+function saveGame() {
+  localStorage.setItem('pokerGame', JSON.stringify({ deck, placedCards, gameMode, scoringSystem, selectedCard }));
+}
 
-  for (let r = 0; r < 5; r++) {
-    hands.push(placedCards.slice(r * 5, r * 5 + 5));
-  }
-
-  for (let c = 0; c < 5; c++) {
-    hands.push([0,1,2,3,4].map(r => placedCards[r * 5 + c]));
-  }
-
-  const score = hands.reduce((total, hand) => total + scoreHand(hand, scoringSystem), 0);
-  alert(`Final Score: ${score} (${scoringSystem} system)`);
-  saveScoreToLeaderboard(score);
-  updateLeaderboardDisplay();
+function loadGame() {
+  const data = JSON.parse(localStorage.getItem('pokerGame'));
+  if (!data || !data.placedCards) return false;
+  deck = data.deck;
+  placedCards = data.placedCards;
+  gameMode = data.gameMode;
+  scoringSystem = data.scoringSystem;
+  selectedCard = data.selectedCard;
+  renderCardPool(gameMode === 'standard' ? [deck[0]] : deck.filter(c => !placedCards.includes(c)));
+  return true;
 }
 
 function resetGame() {
-  selectedCard = null;
-  deck = [];
-  placedCards = Array(25).fill(null);
-  document.getElementById('menu').style.display = 'block';
-  document.getElementById('game').style.display = 'none';
+  localStorage.removeItem('pokerGame');
+  location.reload();
+}
+
+function finishGame() {
+  const score = Math.floor(Math.random() * 400); // Placeholder score
+  document.getElementById('score-display').textContent = `Score: ${score}`;
+  const scores = JSON.parse(localStorage.getItem('leaderboard') || '[]');
+  scores.push(score);
+  scores.sort((a, b) => b - a);
+  localStorage.setItem('leaderboard', JSON.stringify(scores.slice(0, 5)));
   updateLeaderboardDisplay();
 }
 
-function getLeaderboardKey() {
-  return `leaderboard_${gameMode}_${scoringSystem}`;
-}
-
-function saveScoreToLeaderboard(score) {
-  const name = prompt("Enter your name for the leaderboard:", "Anonymous") || "Anonymous";
-  const key = getLeaderboardKey();
-  const entry = { name, score, mode: gameMode, scoring: scoringSystem };
-
-  let list = JSON.parse(localStorage.getItem(key)) || [];
-  list.push(entry);
-  list.sort((a, b) => b.score - a.score);
-  list = list.slice(0, 5);
-  localStorage.setItem(key, JSON.stringify(list));
-}
-
 function updateLeaderboardDisplay() {
-  const mode = document.getElementById('game-mode')?.value || 'standard';
-  const scoring = document.getElementById('scoring-system')?.value || 'american';
-  const key = `leaderboard_${mode}_${scoring}`;
-  const list = JSON.parse(localStorage.getItem(key)) || [];
-
-  const out = list.map((entry, i) =>
-    `<div>#${i + 1}: ${entry.name} - ${entry.score} pts</div>`
-  ).join('') || '<div>No scores yet!</div>';
-
-  document.getElementById('leaderboard-list').innerHTML = out;
+  const scores = JSON.parse(localStorage.getItem('leaderboard') || '[]');
+  const list = document.getElementById('top-scores');
+  list.innerHTML = scores.map(s => `<li>${s}</li>`).join('');
 }
