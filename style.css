@@ -1,50 +1,64 @@
-
 body {
-  font-family: Arial, sans-serif;
-  text-align: center;
-  background: #2e2e2e;
-  color: #ffffff;
-  padding: 20px;
+  font-family: sans-serif;
+  background: #202020;
+  color: white;
+  padding: 10px;
   margin: 0;
+  text-align: center;
 }
 
-#card-container {
+#menu {
+  padding: 20px;
+}
+
+#grid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  gap: 10px;
-  padding: 10px;
-  box-sizing: border-box;
-  max-width: 100vw;
-  margin: 0 auto;
+  gap: 5px;
+  max-width: 90vw;
+  margin: 20px auto;
 }
 
-.card {
-  background: white;
-  color: black;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  width: 100%;
+#grid .cell {
+  background: #eee;
+  border: 2px solid #555;
   aspect-ratio: 2 / 3;
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
-  font-weight: bold;
-  font-size: clamp(0.8rem, 2vw, 1.2rem);
-  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-}
-
-.red {
-  color: red;
 }
 
 #card-pool {
   display: flex;
-  justify-content: center;
   flex-wrap: wrap;
-  margin-bottom: 10px;
+  gap: 5px;
+  justify-content: center;
+  margin: 10px;
+}
+
+.card {
+  background: white;
+  border: 1px solid #999;
+  border-radius: 6px;
+  padding: 4px;
+  width: 50px;
+  aspect-ratio: 2 / 3;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  color: black;
+  touch-action: none;
+}
+
+.card.red {
+  color: red;
 }
 
 .card.selected {
   outline: 3px solid #4caf50;
+}
+
+.dragging {
+  opacity: 0.5;
 }
