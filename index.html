@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,32 +10,26 @@
 <body>
   <div id="menu">
     <h1>Poker Squares</h1>
-    <label>
-      <strong>Choose Game Mode:</strong><br>
-      <select id="game-mode">
-        <option value="standard">Standard (no moves after place)</option>
-        <option value="shuffle">Poker Shuffle (free movement)</option>
-      </select>
-    </label><br><br>
-    <label>
-      <strong>Scoring System:</strong><br>
-      <select id="scoring-system">
-        <option value="american">American</option>
-        <option value="english">English</option>
-      </select>
-    </label><br><br>
-    <div id="leaderboard">
-      <h2>Leaderboard</h2>
-      <div id="leaderboard-list"></div>
-    </div><br>
+    <label for="game-mode">Game Mode:</label>
+    <select id="game-mode">
+      <option value="standard">Standard</option>
+      <option value="shuffle">Poker Shuffle</option>
+    </select>
+    <label for="scoring-system">Scoring System:</label>
+    <select id="scoring-system">
+      <option value="american">American</option>
+      <option value="english">English</option>
+    </select>
     <button onclick="startGame()">Start Game</button>
+    <h3>Top 5 Scores</h3>
+    <ul id="top-scores"></ul>
   </div>
 
-  <div id="game" style="display: none;">
+  <div id="game" style="display:none;">
     <h2 id="mode-title"></h2>
     <div id="card-pool"></div>
-    <div id="grid"></div>
-    <button id="score-button" onclick="endGame()">Finish & Score</button>
+    <div id="card-container"></div>
+    <h3 id="score-display">Score: 0</h3>
     <button onclick="resetGame()">Restart</button>
   </div>
 
