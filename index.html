@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Poker Squares</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="menu">
+    <h1>Poker Squares</h1>
+    <label>
+      <strong>Choose Game Mode:</strong><br>
+      <select id="game-mode">
+        <option value="standard">Standard (no moves after place)</option>
+        <option value="shuffle">Poker Shuffle (free movement)</option>
+      </select>
+    </label><br><br>
+    <label>
+      <strong>Scoring System:</strong><br>
+      <select id="scoring-system">
+        <option value="american">American</option>
+        <option value="english">English</option>
+      </select>
+    </label><br><br>
+    <div id="leaderboard">
+      <h2>Leaderboard</h2>
+      <div id="leaderboard-list"></div>
+    </div><br>
+    <button onclick="startGame()">Start Game</button>
+  </div>
+
+  <div id="game" style="display: none;">
+    <h2 id="mode-title"></h2>
+    <div id="card-pool"></div>
+    <div id="grid"></div>
+    <button id="score-button" onclick="endGame()">Finish & Score</button>
+    <button onclick="resetGame()">Restart</button>
+  </div>
+
+  <script src="cards.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

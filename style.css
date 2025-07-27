@@ -1,0 +1,64 @@
+body {
+  font-family: sans-serif;
+  background: #202020;
+  color: white;
+  padding: 10px;
+  margin: 0;
+  text-align: center;
+}
+
+#menu {
+  padding: 20px;
+}
+
+#grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 5px;
+  max-width: 90vw;
+  margin: 20px auto;
+}
+
+#grid .cell {
+  background: #eee;
+  border: 2px solid #555;
+  aspect-ratio: 2 / 3;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#card-pool {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  justify-content: center;
+  margin: 10px;
+}
+
+.card {
+  background: white;
+  border: 1px solid #999;
+  border-radius: 6px;
+  padding: 4px;
+  width: 50px;
+  aspect-ratio: 2 / 3;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  color: black;
+  touch-action: none;
+}
+
+.card.red {
+  color: red;
+}
+
+.card.selected {
+  outline: 3px solid #4caf50;
+}
+
+.dragging {
+  opacity: 0.5;
+}
