@@ -15,7 +15,7 @@ body {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: 5px;
-  max-width: 90vw;
+  max-width: min(90vw, 400px); /* Responsive grid: mobile-friendly, desktop-bounded */
   margin: 20px auto;
 }
 
@@ -26,6 +26,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  width: 100%; /* Ensure cells scale with grid */
 }
 
 #card-pool {
@@ -41,7 +42,7 @@ body {
   border: 1px solid #999;
   border-radius: 6px;
   padding: 4px;
-  width: 50px;
+  width: 100%;              /* Let the card fill its cell */
   aspect-ratio: 2 / 3;
   display: flex;
   justify-content: center;
