@@ -1,3 +1,4 @@
+now here is my css file. on my phone the size of the grid cells are perfect but on my computer they are way too big
 body {
   font-family: sans-serif;
   background: #202020;
@@ -15,7 +16,7 @@ body {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: 5px;
-  max-width: min(90vw, 400px); /* Responsive grid: mobile-friendly, desktop-bounded */
+  max-width: 90vw;
   margin: 20px auto;
 }
 
@@ -26,7 +27,6 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100%; /* Ensure cells scale with grid */
 }
 
 #card-pool {
@@ -42,7 +42,7 @@ body {
   border: 1px solid #999;
   border-radius: 6px;
   padding: 4px;
-  width: 100%;              /* Let the card fill its cell */
+  width: 50px;
   aspect-ratio: 2 / 3;
   display: flex;
   justify-content: center;
