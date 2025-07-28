@@ -3,40 +3,29 @@ function scoreHand(hand, system = 'american') {
   // Return 0 if the hand doesn't have exactly 5 cards or contains null/invalid cards
   if (hand.length !== 5 || hand.some(c => c == null)) return 0;
 
-  // Extract the value (e.g., 'A', 'K', '10') of each card in the hand
+  // Extract the value and suit of each card in the hand
   const values = hand.map(c => c.value);
-
-  // Extract the suit (e.g., 'hearts', 'clubs') of each card in the hand
   const suits = hand.map(c => c.suit);
 
-  // The order of card ranks, used to determine straights and hand strength
+  // Order of card ranks for comparison
   const rankOrder = ['2','3','4','5','6','7','8','9','10','J','Q','K','A'];
 
-  // Object to count how many times each card value appears in the hand
+  // Count the frequency of each card value
   const valueCounts = {};
   values.forEach(v => valueCounts[v] = (valueCounts[v] || 0) + 1);
-
-  // Array of how many times each value appears, sorted from most to least frequent
-  // (e.g., [3,2] for a full house, [2,2,1] for two pair)
   const counts = Object.values(valueCounts).sort((a, b) => b - a);
 
-  // Boolean: true if all cards have the same suit (i.e., it's a flush)
+  // Check for flush (all suits the same)
   const isFlush = suits.every(s => s === suits[0]);
 
-  // Convert card values to their indexes in rankOrder, then sort ascending
-  // Used to detect sequential order (i.e., a straight)
+  // Convert card values to their rank indexes for straight detection
   const sortedIndexes = values.map(v => rankOrder.indexOf(v)).sort((a, b) => a - b);
+  const uniqueIndexes = [...new Set(sortedIndexes)];
 
-  // Boolean: true if the card values form a continuous sequence (i.e., a straight)
-  let isStraight = true;
-  for (let i = 1; i < sortedIndexes.length; i++) {
-    if (sortedIndexes[i] !== sortedIndexes[i - 1] + 1) {
-      isStraight = false;
-      break;
-    }
-  }
+  // Check for standard straight (5 consecutive unique ranks)
+  let isStraight = uniqueIndexes.length === 5 && uniqueIndexes[4] - uniqueIndexes[0] === 4;
 
-  // Special case: check for Ace-low straight (A, 2, 3, 4, 5)
+  // Special case: Ace-low straight (A, 2, 3, 4, 5)
   if (
     !isStraight &&
     values.includes('A') &&
@@ -48,23 +37,23 @@ function scoreHand(hand, system = 'american') {
     isStraight = true;
   }
 
-  // Boolean: true if it's a royal flush (10, J, Q, K, A all same suit)
+  // Check for royal flush (10, J, Q, K, A all in the same suit)
   const isRoyal = isFlush && isStraight && values.includes('A') && values.includes('10');
 
-  // String that will represent the identified type of poker hand
+  // Determine hand type based on card patterns
   let handType = '';
   if (isRoyal) handType = 'royal_flush';
   else if (isFlush && isStraight) handType = 'straight_flush';
-  else if (counts[0] === 4) handType = 'four_of_a_kind';            // e.g., [4,1]
-  else if (counts[0] === 3 && counts[1] === 2) handType = 'full_house'; // e.g., [3,2]
+  else if (counts[0] === 4) handType = 'four_of_a_kind';
+  else if (counts[0] === 3 && counts[1] === 2) handType = 'full_house';
   else if (isFlush) handType = 'flush';
   else if (isStraight) handType = 'straight';
-  else if (counts[0] === 3) handType = 'three_of_a_kind';           // e.g., [3,1,1]
-  else if (counts[0] === 2 && counts[1] === 2) handType = 'two_pair';   // e.g., [2,2,1]
-  else if (counts[0] === 2) handType = 'one_pair';                  // e.g., [2,1,1,1]
-  else handType = 'high_card';                                      // No other match
+  else if (counts[0] === 3) handType = 'three_of_a_kind';
+  else if (counts[0] === 2 && counts[1] === 2) handType = 'two_pair';
+  else if (counts[0] === 2) handType = 'one_pair';
+  else handType = 'high_card';
 
-  // Scoring tables for each hand type under two different systems
+  // Scoring systems
   const scoring = {
     american: {
       royal_flush: 100,
@@ -92,6 +81,6 @@ function scoreHand(hand, system = 'american') {
     },
   };
 
-  // Return the final score based on the chosen system and the detected hand type
-  return scoring[system][handType];
+  // Return score, defaulting to 0 if system or hand type is unknown
+  return (scoring[system]?.[handType] ?? 0);
 }
