@@ -13,10 +13,10 @@ body {
 
 #grid {
   display: grid;
-  grid-template-columns: repeat(5, 50px); /* match card width */
+  grid-template-columns: repeat(5, auto); /* use auto instead of 1fr */
   gap: 5px;
-  width: fit-content;
   margin: 20px auto;
+  justify-content: center;
 }
 
 #grid .cell {
@@ -29,7 +29,6 @@ body {
   justify-content: center;
   align-items: center;
 }
-
 
 #card-pool {
   display: flex;
