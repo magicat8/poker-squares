@@ -21,7 +21,7 @@ body {
 
 #grid .cell {
   width: 50px;
-  aspect-ratio: 2 / 3;
+  height: 75px;
   background: #f5f5f5;
   border: 2px solid #555;
   border-radius: 8px;
@@ -42,10 +42,10 @@ body {
   background: white;
   border: 1px solid #999;
   border-radius: 6px;
-  padding: 6px;
-  min-width: 48px;
-  min-height: 72px;
-  aspect-ratio: 2 / 3;
+  padding: 2px;
+  width: 50px;
+  height: 75px;
+  box-sizing: border-box;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -56,10 +56,6 @@ body {
   user-select: none;
   cursor: grab;
   transition: transform 0.1s ease, outline 0.2s ease;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  outline: none;
 }
 
 .card:active {
