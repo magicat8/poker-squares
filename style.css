@@ -13,21 +13,23 @@ body {
 
 #grid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(5, 50px); /* match card width */
   gap: 5px;
-  max-width: 90vw;
+  width: fit-content;
   margin: 20px auto;
 }
 
 #grid .cell {
+  width: 50px;
+  aspect-ratio: 2 / 3;
   background: #f5f5f5;
   border: 2px solid #555;
   border-radius: 8px;
-  aspect-ratio: 2 / 3;
   display: flex;
   justify-content: center;
   align-items: center;
 }
+
 
 #card-pool {
   display: flex;
