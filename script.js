@@ -246,3 +246,5 @@ function updateLeaderboardDisplay() {
 
   document.getElementById('leaderboard-list').innerHTML = out;
 }
+
+document.addEventListener('DOMContentLoaded', updateLeaderboardDisplay);
