@@ -73,6 +73,11 @@ function renderCardPool(cards) {
       const topIndex = deck.findIndex(c => c !== null);
       if (index !== topIndex) return;
     }
+    
+    if (gameMode === 'shuffle') {
+      const topIndex = deck.findIndex(c => c !== null);
+      if (index !== topIndex) return;
+    }
 
     div.addEventListener('dragstart', (e) => {
       e.dataTransfer.setData('card-index', index);
